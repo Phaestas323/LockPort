@@ -317,6 +317,9 @@
 							this:SetTextColor(1, 1, 1, 1)
 							this:SetTextInsets(6, 6, 2, 2)
 						</OnLoad>
+						<OnTextChanged>
+							LockPortMessageEditBox_OnTextChanged()
+						</OnTextChanged>
 						<OnEnterPressed>
 							LockPortMessageEditBox_OnEnterPressed()
 						</OnEnterPressed>

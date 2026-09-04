@@ -28,3 +28,5 @@ Addon orginally written by Gurky. I am just rehosting it.
 - /lockport settings - Opens the settings window.
 - /lockport sound - Enables or Disables the sound on summon request.
 - /lockport message <text> - Sets the custom /say message used when summoning. Use /lockport message clear to restore the generated message.
+
+LockPort works in both raid and party groups. Custom message settings are saved by the game when you log out or reload the UI; avoid closing the client with Alt+F4 if you need the latest changes saved.

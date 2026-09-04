@@ -540,6 +540,12 @@ function LockPortMessageEditBox_OnEnterPressed()
 	DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message updated")
 end
 
+function LockPortMessageEditBox_OnTextChanged()
+	if LockPortOptions and LockPortMessageEditBox then
+		LockPortOptions.message = LockPortMessageEditBox:GetText()
+	end
+end
+
 function CustomMessageCheckButton_OnClick()
 	LockPortOptions.customMessage = CustomMessageCheckButton:GetChecked()
 	DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message: " .. (LockPortOptions.customMessage and "|cff00ff00enabled|r" or "|cffff0000disabled|r"))
