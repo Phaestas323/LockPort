@@ -52,6 +52,7 @@ function LockPort_EventFrame_OnLoad()
     this:RegisterEvent("CHAT_MSG_ADDON")
     this:RegisterEvent("CHAT_MSG_RAID")
 	this:RegisterEvent("CHAT_MSG_RAID_LEADER")
+	this:RegisterEvent("CHAT_MSG_PARTY")
     this:RegisterEvent("CHAT_MSG_SAY")
     this:RegisterEvent("CHAT_MSG_YELL")
     this:RegisterEvent("CHAT_MSG_WHISPER")
@@ -73,11 +74,11 @@ function LockPort_EventFrame_OnEvent()
 	if event == "VARIABLES_LOADED" then
 		this:UnregisterEvent("VARIABLES_LOADED")
 		LockPort_Initialize()
-	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then	
+	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
 		-- if (string.find(arg1, "^123") and UnitClass("player")~=arg2) then
 		if string.find(arg1, "^123") then
 			-- DEFAULT_CHAT_FRAME:AddMessage("CHAT_MSG")
-			SendAddonMessage(MSG_PREFIX_ADD, arg2, "RAID")
+			SendAddonMessage(MSG_PREFIX_ADD, arg2, LockPort_GetGroupChannel())
 		end
 	elseif event == "CHAT_MSG_ADDON" then
 		if arg1 == MSG_PREFIX_ADD then
@@ -103,6 +104,13 @@ function LockPort_EventFrame_OnEvent()
 	end
 end
 
+function LockPort_GetGroupChannel()
+	if GetNumRaidMembers() > 0 then
+		return "RAID"
+	end
+	return "PARTY"
+end
+
 function LockPort_hasValue (tab, val)
     for i, v in ipairs (tab) do
         if v == val then
@@ -125,21 +133,21 @@ function LockPort_NameListButton_OnClick(button)
 		if LockPort_UnitIDDB then
 			for i, v in ipairs (LockPort_UnitIDDB) do
 				if v.rName == name then
-					UnitID = "raid"..v.rIndex
+					UnitID = v.rUnit
 				end
 			end
 			if UnitID then
 				TargetUnit(UnitID)
 			end
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : no raid found")
+			DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : no raid or party found")
 		end
 	elseif button == "LeftButton" and not IsControlKeyDown() then
 		LockPort_GetRaidMembers()
 		if LockPort_UnitIDDB then
 			for i, v in ipairs (LockPort_UnitIDDB) do
 				if v.rName == name then
-					UnitID = "raid"..v.rIndex
+					UnitID = v.rUnit
 				end
 			end
 			if UnitID then
@@ -174,7 +182,7 @@ function LockPort_NameListButton_OnClick(button)
 						DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : <" .. name .. "> has |cffff0000Evil Twin|r !")
 						for i, v in ipairs (LockPortDB) do
 							if v == name then
-								SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+								SendAddonMessage(MSG_PREFIX_REMOVE, name, LockPort_GetGroupChannel())
 								table.remove(LockPortDB, i)
 							end
 						end
@@ -183,7 +191,7 @@ function LockPort_NameListButton_OnClick(button)
 						-- Remove the already summoned target
 						for i, v in ipairs (LockPortDB) do
 							if v == name then
-						    	SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+								SendAddonMessage(MSG_PREFIX_REMOVE, name, LockPort_GetGroupChannel())
 						    	table.remove(LockPortDB, i)
 						    	LockPort_UpdateList()
 						    end
@@ -219,7 +227,7 @@ function LockPort_NameListButton_OnClick(button)
 						-- Remove the summoned target
 						for i, v in ipairs (LockPortDB) do
 							if v == name then
-						    	SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+							    SendAddonMessage(MSG_PREFIX_REMOVE, name, LockPort_GetGroupChannel())
 						    	table.remove(LockPortDB, i)
 						    	LockPort_UpdateList()
 						    end
@@ -229,17 +237,17 @@ function LockPort_NameListButton_OnClick(button)
 					DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : Player is in combat")
 				end
 			else
-				DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : <" .. tostring(name) .. "> not found in raid. UnitID: " .. tostring(UnitID))
-				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+				DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : <" .. tostring(name) .. "> not found in group. UnitID: " .. tostring(UnitID))
+								SendAddonMessage(MSG_PREFIX_REMOVE, name, LockPort_GetGroupChannel())
 				LockPort_UpdateList()
 			end
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : no raid found")
+			DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r : no raid or party found")
 		end
 	elseif button == "RightButton" then
 		for i, v in ipairs (LockPortDB) do
 			if v == name then
-				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+								SendAddonMessage(MSG_PREFIX_REMOVE, name, LockPort_GetGroupChannel())
 				table.remove(LockPortDB, i)
 				LockPort_UpdateList()
 			end
@@ -252,11 +260,24 @@ function LockPort_UpdateList()
 	LockPort_BrowseDB = {}
 	--only Update and show if Player is Warlock
 	 if (UnitClass("player") == "Warlock") then
-		--get raid member data
-		local raidnum = GetNumRaidMembers()
-		if (raidnum > 0) then
-			for raidmember = 1, raidnum do
-				local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(raidmember)
+		--get raid or party member data
+		local groupnum = GetNumRaidMembers()
+		local isRaid = groupnum > 0
+		if not isRaid then
+			groupnum = GetNumPartyMembers()
+		end
+		if (groupnum > 0) then
+			for groupmember = 1, groupnum do
+				local rName, rClass, rUnit
+				if isRaid then
+					local rRank, rSubgroup, rLevel
+					rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(groupmember)
+					rUnit = "raid"..groupmember
+				else
+					rUnit = "party"..groupmember
+					rName = UnitName(rUnit)
+					rClass = UnitClass(rUnit)
+				end
 				--check raid data for LockPort data
 				for i, v in ipairs (LockPortDB) do 
 					--if player is found fill BrowseDB
@@ -265,6 +286,7 @@ function LockPort_UpdateList()
 						LockPort_BrowseDB[i].rName = rName
 						LockPort_BrowseDB[i].rClass = rClass
 						LockPort_BrowseDB[i].rIndex = i
+						LockPort_BrowseDB[i].rUnit = rUnit
 						if rClass == "Warlock" or rName == "Bennylava" then
 							LockPort_BrowseDB[i].rVIP = true
 						else
@@ -423,13 +445,26 @@ function LockPort_GetClassColour(class)
 	return {r = 0.5, g = 0.5, b = 1}
 end
 
---raid member
+--raid or party member
 function LockPort_GetRaidMembers()
-    local raidnum = GetNumRaidMembers()
+	local raidnum = GetNumRaidMembers()
+	local isRaid = raidnum > 0
+	if not isRaid then
+		raidnum = GetNumPartyMembers()
+	end
     if (raidnum > 0) then
 		LockPort_UnitIDDB = {}
 		for i = 1, raidnum do
-		    local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+		    local rName, rClass, rUnit
+		    if isRaid then
+				local rRank, rSubgroup, rLevel
+				rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+				rUnit = "raid"..i
+			else
+				rUnit = "party"..i
+				rName = UnitName(rUnit)
+				rClass = UnitClass(rUnit)
+			end
 			LockPort_UnitIDDB[i] = {}
 			if (not rName) then 
 			    rName = "unknown"..i
@@ -437,6 +472,7 @@ function LockPort_GetRaidMembers()
 			LockPort_UnitIDDB[i].rName    = rName
 			LockPort_UnitIDDB[i].rClass   = rClass
 			LockPort_UnitIDDB[i].rIndex   = i
+			LockPort_UnitIDDB[i].rUnit    = rUnit
 	    end
 	end
 end

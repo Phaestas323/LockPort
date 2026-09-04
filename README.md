@@ -9,7 +9,7 @@ Addon orginally written by Gurky. I am just rehosting it.
 
 ## How it works:
 
-- You must be in a raid group.
+- You must be in a raid or party group.
 - If someone types 123 in Yell, Whisper, Party, Raid, or Raid Leader the Player name gets added to the LockPort list and is synced accros all LockPort users. Any user added to the list will also trigger a sound alert to let the Warlocks know someone is on the list (Sound is subject to change). 
 - Leftclick to move the frame.
 - Type /lockport to show or hide the LockPort Window.  
