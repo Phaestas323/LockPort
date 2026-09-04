@@ -9,9 +9,7 @@ local function LockPort_Initialize()
 		LockPortOptions = {}
 	end
 	for i in LockPortOptions_DefaultSettings do
-		if LockPortOptions[i] == false then
-			LockPortOptions[i] = false
-		else
+		if LockPortOptions[i] == nil then
 			LockPortOptions[i] = LockPortOptions_DefaultSettings[i]
 		end
 	end
