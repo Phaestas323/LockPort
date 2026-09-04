@@ -28,4 +28,5 @@ Addon orginally written by Gurky.
 - /lockport shards - Enables or Disables shard count message when you summon.
 - /lockport settings - Opens the settings window.
 - /lockport sound - Enables or Disables the sound on summon request.
+- /lockport message <text> - Sets the custom /say message used when summoning. Use /lockport message clear to restore the generated message.
 

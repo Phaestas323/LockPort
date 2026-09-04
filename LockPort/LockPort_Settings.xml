@@ -58,6 +58,15 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
+						<FontString name="LockPort_Settings_Chat_Message" inherits="LockPort_Settings_GameFontNormal" text="Toggle custom /say message.">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+									<Offset>
+										<AbsDimension x="80" y="-155"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
 					</Layer>
 				</Layers>
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true"></Backdrop>
@@ -252,6 +261,65 @@
 						</OnClick>
 					</Scripts>
 				</CheckButton>
+				<CheckButton name="CustomMessageCheckButton" parent="LockPort_SettingsFrame">
+					<Size>
+						<AbsDimension x="35" y="35" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="15" y="-145" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<NormalTexture file="Interface\Buttons\UI-CheckBox-Up" />
+					<PushedTexture file="Interface\Buttons\UI-CheckBox-Down" />
+					<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD" />
+					<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
+					<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
+					<Scripts>
+						<OnLoad>
+							this.tooltip = "Custom Message";
+						</OnLoad>
+						<OnEnter>
+							GameTooltip:SetOwner(LockPort_SettingsFrame, "ANCHOR_TOPLEFT",4, -380);
+							GameTooltip:SetText(this.tooltip);
+							GameTooltip:AddLine("Uses the saved text for the summon /say message.", 255,71,9,0);
+							GameTooltip:Show();
+						</OnEnter>
+						<OnLeave>
+							GameTooltip:Hide();
+						</OnLeave>
+						<OnClick>
+							CustomMessageCheckButton_OnClick()
+						</OnClick>
+					</Scripts>
+				</CheckButton>
+				<EditBox name="LockPortMessageEditBox" parent="LockPort_SettingsFrame" autoFocus="false" letters="255">
+					<Size>
+						<AbsDimension x="220" y="24" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="65" y="-175" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
+						<TileSize>
+							<AbsValue val="16" />
+						</TileSize>
+					</Backdrop>
+					<Scripts>
+						<OnEnterPressed>
+							LockPortMessageEditBox_OnEnterPressed()
+						</OnEnterPressed>
+						<OnEscapePressed>
+							this:ClearFocus()
+						</OnEscapePressed>
+					</Scripts>
+				</EditBox>
 				</Frames>
 			</Frame>
 		</Frames>

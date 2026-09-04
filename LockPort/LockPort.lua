@@ -3,6 +3,8 @@ local LockPortOptions_DefaultSettings = {
 	zone    = true,
     shards  = true,
     sound  = true,
+	message = "",
+	customMessage = false,
 }
 
 local function LockPort_Initialize()
@@ -35,6 +37,12 @@ local function LockPort_Initialize()
 		SoundCheckButton:SetChecked(true)
 	else
 		SoundCheckButton:SetChecked(false)
+	end
+	LockPortMessageEditBox:SetText(LockPortOptions.message or "")
+	if LockPortOptions.customMessage == true then
+		CustomMessageCheckButton:SetChecked(true)
+	else
+		CustomMessageCheckButton:SetChecked(false)
 	end
 end
 
@@ -184,7 +192,7 @@ function LockPort_NameListButton_OnClick(button)
 						-- TODO: Detect if spell is aborted/cancelled : use SpellStopCasting if sit ("You must be standing to do that")
 						CastSpellByName("Ritual of Summoning")
 
-						-- Send Raid Message
+						-- Send summon announcement
 						if LockPortOptions.zone then
 							if GetSubZoneText() == "" then
 						    	message         = message .. zone_message
@@ -197,7 +205,11 @@ function LockPort_NameListButton_OnClick(button)
 						if LockPortOptions.shards then
 					    	message = message .. shards_message
 						end
-						SendChatMessage(message, "SAY")
+						if LockPortOptions.customMessage and LockPortOptions.message ~= "" then
+							SendChatMessage(LockPortOptions.message, "SAY")
+						else
+							SendChatMessage(message, "SAY")
+						end
 
 						-- Send Whisper Message
 						if LockPortOptions.whisper then
@@ -320,7 +332,7 @@ end
 function LockPort_SlashCommand(msg)
 	if msg == "help" then
 		DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r usage:")
-		DEFAULT_CHAT_FRAME:AddMessage("/lockport { help | show | zone | whisper | shards | settings | sound }")
+		DEFAULT_CHAT_FRAME:AddMessage("/lockport { help | show | zone | whisper | shards | settings | sound | message }")
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9help|r: prints out this help")
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9show|r: shows the current summon list")
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9zone|r: toggles zoneinfo")
@@ -328,11 +340,22 @@ function LockPort_SlashCommand(msg)
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9shards|r: toggles shards count when you summon")
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9settings|r: shows the settings window")
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9sound|r: toggles sound on summon request")
+		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9message <text>|r: sets the custom /say summon message; use 'clear' to reset")
 		DEFAULT_CHAT_FRAME:AddMessage("To drag the frame use left mouse button")
 	elseif msg == "show" then
 		for i, v in ipairs(LockPortDB) do
 			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
 		end
+	elseif string.sub(msg, 1, 8) == "message " then
+		local custom_message = string.sub(msg, 9)
+		if custom_message == "clear" then
+			custom_message = ""
+		end
+		LockPortOptions.message = custom_message
+		LockPortOptions.customMessage = custom_message ~= ""
+		LockPortMessageEditBox:SetText(custom_message)
+		CustomMessageCheckButton:SetChecked(LockPortOptions.customMessage)
+		DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message updated")
 	elseif msg == "zone" then
 		if LockPortOptions["zone"] == true then
 			LockPortOptions["zone"] = false
@@ -473,6 +496,17 @@ function LockPort_Settings_Toggle()
 	else
 		LockPort_SettingsFrame:Show()
 	end
+end
+
+function LockPortMessageEditBox_OnEnterPressed()
+	LockPortOptions.message = this:GetText()
+	this:ClearFocus()
+	DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message updated")
+end
+
+function CustomMessageCheckButton_OnClick()
+	LockPortOptions.customMessage = CustomMessageCheckButton:GetChecked()
+	DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message: " .. (LockPortOptions.customMessage and "|cff00ff00enabled|r" or "|cffff0000disabled|r"))
 end
 
 function WhisperCheckButton_OnClick()
