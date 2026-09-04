@@ -312,6 +312,11 @@
 						</TileSize>
 					</Backdrop>
 					<Scripts>
+						<OnLoad>
+							this:SetFont("Interface\\AddOns\\LockPort\\fonts\\Expressway.ttf", 12)
+							this:SetTextColor(1, 1, 1, 1)
+							this:SetTextInsets(6, 6, 2, 2)
+						</OnLoad>
 						<OnEnterPressed>
 							LockPortMessageEditBox_OnEnterPressed()
 						</OnEnterPressed>
