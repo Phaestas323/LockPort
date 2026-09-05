@@ -37,7 +37,7 @@ local function LockPort_Initialize()
 		SoundCheckButton:SetChecked(false)
 	end
 	LockPortMessageEditBox:SetText(LockPortOptions.message or "")
-	if LockPortOptions.customMessage == true then
+	if LockPortOptions.customMessage then
 		CustomMessageCheckButton:SetChecked(true)
 	else
 		CustomMessageCheckButton:SetChecked(false)
@@ -545,7 +545,7 @@ function LockPortMessageEditBox_OnTextChanged()
 end
 
 function CustomMessageCheckButton_OnClick()
-	LockPortOptions.customMessage = CustomMessageCheckButton:GetChecked()
+	LockPortOptions.customMessage = not not CustomMessageCheckButton:GetChecked()
 	DEFAULT_CHAT_FRAME:AddMessage("|CFFB700B7L|CFFFF00FFo|CFFFF50FFc|CFFFF99FFk|CFFFFC4FFP|cffffffffort|r - custom /say message: " .. (LockPortOptions.customMessage and "|cff00ff00enabled|r" or "|cffff0000disabled|r"))
 end
 
