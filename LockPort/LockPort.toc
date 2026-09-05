@@ -3,6 +3,7 @@
 ## Version: 2.0.3
 ## Author: |cff02bf02Bennylava|r
 ## Interface: 11200
-## SavedVariables: LockPortOptions lpupdateavailable
+## SavedVariables: lpupdateavailable
+## SavedVariablesPerCharacter: LockPortOptions
 LockPort.xml
 LockPort_Settings.xml

@@ -4,17 +4,20 @@ local LockPortOptions_DefaultSettings = {
     shards  = true,
     sound  = true,
 	message = "",
-	customMessage = false,
 }
 
 local function LockPort_Initialize()
 	if not LockPortOptions  then
 		LockPortOptions = {}
 	end
+	local hasCustomMessageSetting = LockPortOptions.customMessage ~= nil
 	for i in LockPortOptions_DefaultSettings do
 		if LockPortOptions[i] == nil then
 			LockPortOptions[i] = LockPortOptions_DefaultSettings[i]
 		end
+	end
+	if not hasCustomMessageSetting then
+		LockPortOptions.customMessage = LockPortOptions.message ~= ""
 	end
 	if LockPortOptions["whisper"] == true then
 		WhisperCheckButton:SetChecked(true)
